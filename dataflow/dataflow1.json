@@ -37,6 +37,7 @@
 				"S4HANA sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delta',",
+				"     fileSystem: 'demo',",
 				"     folderPath: 'ZVBAK',",
 				"     mergeSchema: false,",
 				"     autoCompact: false,",
