@@ -21,7 +21,7 @@
 					},
 					"staging": {
 						"linkedService": {
-							"referenceName": "AzureBlobStorage",
+							"referenceName": "AzureDataLakeStorage",
 							"type": "LinkedServiceReference"
 						},
 						"folderPath": "demo/staging"
