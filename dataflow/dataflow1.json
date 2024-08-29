@@ -25,6 +25,7 @@
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     limit: 10,",
 				"     store: 'SapOdp',",
 				"     format: 'sapObject',",
 				"     staged: true,",
