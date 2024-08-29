@@ -1,0 +1,55 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "S4HANA",
+						"type": "LinkedServiceReference"
+					},
+					"name": "S4HANA"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "AzureBlobStorage",
+						"type": "LinkedServiceReference"
+					},
+					"name": "Sink"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     store: 'SapOdp',",
+				"     format: 'sapObject',",
+				"     staged: true,",
+				"     context: 'SLT~SLTODP',",
+				"     objectName: 'VBAK',",
+				"     readMode: 'fullAndIncrementalLoad',",
+				"     keys: ['VBELN'],",
+				"     fixDecimalPrecision: true) ~> S4HANA",
+				"S4HANA sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     container: 'Demo',",
+				"     folderPath: 'ZVBAK',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: true,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['VBELN'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink"
+			]
+		}
+	}
+}

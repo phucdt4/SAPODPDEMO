@@ -1,0 +1,21 @@
+{
+	"name": "S4HANA",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SapOdp",
+		"typeProperties": {
+			"clientId": "200",
+			"sncMode": false,
+			"userName": "phuc.do",
+			"subscriberName": "ZVBAK_ODP",
+			"server": "172.18.2.40",
+			"systemNumber": "02",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJmYTRmZjA1My02MWRiLTQxMTAtOTY3MC1mOWU3NmQ3ODQ3NzUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeDemo",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

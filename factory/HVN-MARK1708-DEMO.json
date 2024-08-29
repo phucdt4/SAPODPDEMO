@@ -1,0 +1,9 @@
+{
+	"name": "HVN-MARK1708-DEMO",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9191c544-1cc8-4cb3-bb65-9d2c55ee867a",
+		"tenantId": "18791e17-6159-4f52-a8d4-de814ca8284a"
+	}
+}
