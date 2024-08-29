@@ -8,8 +8,14 @@
 		"AzureBlobStorage_connectionString": {
 			"value": ""
 		},
+		"AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
 		"S4HANA_password": {
 			"value": ""
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://hvndemoodp.dfs.core.windows.net/"
 		},
 		"S4HANA_properties_typeProperties_clientId": {
 			"value": "200"

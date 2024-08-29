@@ -11,9 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
 		},
+		"AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage'"
+		},
 		"S4HANA_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'S4HANA'"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hvndemoodp.dfs.core.windows.net/"
 		},
 		"S4HANA_properties_typeProperties_clientId": {
 			"type": "string",
@@ -87,6 +95,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AzureIntegrationRuntimes",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AzureIntegrationRuntimes')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/S4HANA')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -133,7 +164,7 @@
 					"sinks": [
 						{
 							"linkedService": {
-								"referenceName": "AzureBlobStorage",
+								"referenceName": "AzureDataLakeStorage",
 								"type": "LinkedServiceReference"
 							},
 							"name": "Sink"
@@ -155,7 +186,7 @@
 						"S4HANA sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'delta',",
-						"     container: 'Demo',",
+						"     fileSystem: 'demo',",
 						"     folderPath: 'ZVBAK',",
 						"     mergeSchema: false,",
 						"     autoCompact: false,",
@@ -166,6 +197,9 @@
 						"     updateable: false,",
 						"     upsertable: true,",
 						"     keys:['VBELN'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> Sink"
 					]
@@ -173,7 +207,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/S4HANA')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]"
 			]
 		},
 		{
@@ -206,7 +240,7 @@
 							},
 							"staging": {
 								"linkedService": {
-									"referenceName": "AzureBlobStorage",
+									"referenceName": "AzureDataLakeStorage",
 									"type": "LinkedServiceReference"
 								},
 								"folderPath": "demo/staging"
@@ -229,8 +263,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflow1')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/AzureIntegrationRuntimes')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AzureIntegrationRuntimes')]"
 			]
 		}
 	]

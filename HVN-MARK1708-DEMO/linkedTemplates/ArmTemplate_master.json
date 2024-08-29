@@ -11,9 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
 		},
+		"AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage'"
+		},
 		"S4HANA_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'S4HANA'"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hvndemoodp.dfs.core.windows.net/"
 		},
 		"S4HANA_properties_typeProperties_clientId": {
 			"type": "string",
@@ -61,8 +69,14 @@
 					"AzureBlobStorage_connectionString": {
 						"value": "[parameters('AzureBlobStorage_connectionString')]"
 					},
+					"AzureDataLakeStorage_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage_accountKey')]"
+					},
 					"S4HANA_password": {
 						"value": "[parameters('S4HANA_password')]"
+					},
+					"AzureDataLakeStorage_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]"
 					},
 					"S4HANA_properties_typeProperties_clientId": {
 						"value": "[parameters('S4HANA_properties_typeProperties_clientId')]"
