@@ -1,0 +1,180 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "HVN-MARK1708-DEMO"
+		},
+		"AzureBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
+		},
+		"S4HANA_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'S4HANA'"
+		},
+		"S4HANA_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "200"
+		},
+		"S4HANA_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "phuc.do"
+		},
+		"S4HANA_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "172.18.2.40"
+		},
+		"S4HANA_properties_typeProperties_systemNumber": {
+			"type": "string",
+			"defaultValue": "02"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AzureIntegrationRuntimes",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AzureIntegrationRuntimes')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/S4HANA')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SapOdp",
+				"typeProperties": {
+					"clientId": "[parameters('S4HANA_properties_typeProperties_clientId')]",
+					"sncMode": false,
+					"userName": "[parameters('S4HANA_properties_typeProperties_userName')]",
+					"subscriberName": "ZVBAK_ODP",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('S4HANA_password')]"
+					},
+					"server": "[parameters('S4HANA_properties_typeProperties_server')]",
+					"systemNumber": "[parameters('S4HANA_properties_typeProperties_systemNumber')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeDemo",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeDemo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureIntegrationRuntimes')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 16,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntimeDemo')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "S4HANA",
+								"type": "LinkedServiceReference"
+							},
+							"name": "S4HANA"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "AzureBlobStorage",
+								"type": "LinkedServiceReference"
+							},
+							"name": "Sink"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     limit: 10,",
+						"     store: 'SapOdp',",
+						"     format: 'sapObject',",
+						"     staged: true,",
+						"     context: 'SLT~SLTODP',",
+						"     objectName: 'VBAK',",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys: ['VBELN'],",
+						"     fixDecimalPrecision: true) ~> S4HANA",
+						"S4HANA sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     container: 'Demo',",
+						"     folderPath: 'ZVBAK',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: true,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['VBELN'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/S4HANA')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
+			]
+		}
+	]
+}

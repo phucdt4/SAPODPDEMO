@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "HVN-MARK1708-DEMO"
+		},
+		"AzureBlobStorage_connectionString": {
+			"value": ""
+		},
+		"S4HANA_password": {
+			"value": ""
+		},
+		"S4HANA_properties_typeProperties_clientId": {
+			"value": "200"
+		},
+		"S4HANA_properties_typeProperties_userName": {
+			"value": "phuc.do"
+		},
+		"S4HANA_properties_typeProperties_server": {
+			"value": "172.18.2.40"
+		},
+		"S4HANA_properties_typeProperties_systemNumber": {
+			"value": "02"
+		}
+	}
+}

@@ -1,0 +1,84 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "HVN-MARK1708-DEMO"
+		},
+		"AzureBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
+		},
+		"S4HANA_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'S4HANA'"
+		},
+		"S4HANA_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "200"
+		},
+		"S4HANA_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "phuc.do"
+		},
+		"S4HANA_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "172.18.2.40"
+		},
+		"S4HANA_properties_typeProperties_systemNumber": {
+			"type": "string",
+			"defaultValue": "02"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "HVN-MARK1708-DEMO_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage_connectionString": {
+						"value": "[parameters('AzureBlobStorage_connectionString')]"
+					},
+					"S4HANA_password": {
+						"value": "[parameters('S4HANA_password')]"
+					},
+					"S4HANA_properties_typeProperties_clientId": {
+						"value": "[parameters('S4HANA_properties_typeProperties_clientId')]"
+					},
+					"S4HANA_properties_typeProperties_userName": {
+						"value": "[parameters('S4HANA_properties_typeProperties_userName')]"
+					},
+					"S4HANA_properties_typeProperties_server": {
+						"value": "[parameters('S4HANA_properties_typeProperties_server')]"
+					},
+					"S4HANA_properties_typeProperties_systemNumber": {
+						"value": "[parameters('S4HANA_properties_typeProperties_systemNumber')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
